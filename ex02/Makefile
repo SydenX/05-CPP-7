@@ -6,35 +6,24 @@
 #    By: jtollena <jtollena@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/02 23:04:50 by lolemmen          #+#    #+#              #
-#    Updated: 2024/09/23 11:31:55 by jtollena         ###   ########.fr        #
+#    Updated: 2024/09/23 15:05:10 by jtollena         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .SILENT:
 .PHONY: NAME re all fclean clean
 
-NAME = templates
+NAME := bureaucrat
 
 # Compilation
 
 RM = rm -rf
-CC = c++
-CFLAGS = -std=c++98 -Wall -Werror -Wextra -Wno-shadow
+CXX = c++
+CXXFLAGS = -std=c++98 -Wall -Werror -Wextra -Wno-shadow
 
-# Directories
-
-SRCSDIR = .
-INCSDIR = .
-OBJSDIR = objs
-
-# Sources
-
-INC = 
-
-SRC = \
+SOURCES := \
 	 main.cpp
-#  main.cpp
-	
+	 
 # **************************************************************************** #
 
 # Special Chars
@@ -53,31 +42,27 @@ LOG_WHITE = \033[1;37m
 
 # **************************************************************************** #
 
-SRCS = $(addprefix $(SRCSDIR)/, $(SRC))
-OBJS = $(addprefix $(OBJSDIR)/, $(SRC:.cpp=.o))
-OBJS_DIR = $(sort $(dir $(OBJS)))
-
-INCS_DIR = $(addsuffix /, $(INCSDIR))
-INCS = $(addprefix -I, $(INCS_DIR)) 
+OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
+DEPENDS := $(patsubst %.cpp,%.d,$(SOURCES))
 
 all : $(NAME)
 
-$(NAME) : $(OBJS)
+$(NAME) : $(OBJECTS)
 	echo "$(LOG_CLEAR)$(NAME)... $(LOG_CYAN)assembling... $(LOG_NOCOLOR)$(LOG_UP)"
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 	echo "$(LOG_CLEAR)$(NAME)... $(LOG_GREEN)compiled $(LOG_GREEN)✓$(LOG_NOCOLOR)"
 
-clean :
-	$(RM) $(OBJSDIR)
+clean:
+	$(RM) $(OBJECTS) $(DEPENDS)
 
-fclean : clean
+fclean: clean
 	$(RM) $(NAME)
 
 re : fclean all
 
+-include $(DEPENDS)
 
-
-$(OBJSDIR)/%.o: $(SRCSDIR)/%.cpp
-	mkdir -p $(OBJSDIR) $(OBJS_DIR)
+%.o: %.cpp Makefile
 	@echo "$(LOG_CLEAR)$(NAME)... $(LOG_YELLOW)$<$(LOG_NOCOLOR)$(LOG_UP)"
-	$(CC) -c $< -o $@ $(INCS) $(CFLAGS)
+	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
+	
