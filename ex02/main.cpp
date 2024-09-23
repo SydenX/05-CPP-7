@@ -36,7 +36,7 @@ int main(int, char**)
 				std::cerr << "didn't save the same value!!";
 				return 1;
 			}
-			std::cout << "tmp[" << i << "]:\t\t" << tmp[i] << std::endl;
+			std::cout << "tmp [" << i << "]:\t" << tmp[i] << std::endl;
 			std::cout << "test[" << i << "]:\t" << test[i] << std::endl;
 		}
 		std::cout << std::endl;
