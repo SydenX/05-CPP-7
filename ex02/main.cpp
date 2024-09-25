@@ -82,6 +82,6 @@ int main(int, char**)
     }catch(const std::exception& e){
         std::cerr << e.what() << '\n' << std::endl;
     }
-    delete [] mirror;//
+    delete [] mirror;
     return 0;
 }
